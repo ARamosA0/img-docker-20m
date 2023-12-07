@@ -1,0 +1,5 @@
+Flask
+Redis
+flask-cors
+confluent_kafka
+dask
