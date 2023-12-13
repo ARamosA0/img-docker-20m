@@ -13,6 +13,7 @@ import time
 hostname = socket.gethostname()
 
 app = Flask(__name__)
+app.config['mi_dataframe'] = None
 
 def get_redis_broker():
     if not hasattr(g, 'redis'):
@@ -168,27 +169,49 @@ def topSuggestions(fullObj, k, items):
 
 @app.route("/", methods=['POST','GET'])
 def hello():
-    return make_response(jsonify({'message':'API V1'})) 
+    inicio = time.time()
+    data = readLargeFileDask('ratings.csv')
+    app.config['mi_dataframe'] = data
+    #g.dfg = data
+    fin = time.time()
+    return make_response(jsonify(
+    {
+    'message':'Datos Cargados',
+    'tiempo':fin-inicio,
+    'len':len(data)
+    }
+    ))
+
 
 @app.route("/<int:user_id>", methods=['GET'])
 def getruta(user_id):
     #redis = get_redis_broker()
     #valor = redis.get('getUsuarioCursos')
-    id = int(user_id)
-    rfunc = euclidianaL
-    inicio = time.time()
+    
     print("///////////////////////////////////////////////////////////////////////")
-    lstdb20 = readLargeFileDask('ratings.csv')
+    #lstdb20 = readLargeFileDask('ratings.csv')
     #ldist, luser = knn_L(15, euclidianaL, id, lstdb20)
-    lista = recommendationL(id, euclidianaL, 10, 20, 3.0, lstdb20)
-    fin = time.time()
-    return make_response(jsonify(
-    {
-    'message':'API V2',
-    'tiempo':fin-inicio,
-    'resultado':lista
-    }
-    )) 
+    #data = g.lstdb
+    df = app.config.get('mi_dataframe')
+
+    if df is not None:
+        id = int(user_id)
+        rfunc = euclidianaL
+        inicio = time.time()
+        
+        lista = recommendationL(id, euclidianaL, 10, 20, 3.0, df)
+        fin = time.time()
+        return make_response(jsonify(
+        {
+        'message':'API V2',
+        'tiempo':fin-inicio,
+        'resultado':lista
+        }
+        ))
+
+    else:
+        return "La variable global 'mi_dataframe' no está definida."
+     
 
 
 

@@ -1,0 +1,18 @@
+version: "3.4"
+services:
+  #SERVICIO para el procesamiento de data
+  #en python
+  #puerto 5000
+  cursos:
+    build: . 
+    ports:
+      - "5000:80"
+    volumes:
+      - .:/usr/local/app
+
+  redis-collect:
+    image: redis:alpine
+    volumes:
+      - "./healthchecks:/healthchecks"
+    ports:
+      - "6379:6379"
