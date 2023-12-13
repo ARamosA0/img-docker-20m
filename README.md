@@ -1,7 +1,7 @@
-# img-docker-20m
+# Repositorio para levantar la aplicacion de python de recomendacion
 
-wget https://files.grouplens.org/datasets/movielens/ml-20m.zip
+wget https://files.grouplens.org/datasets/movielens/ml-25m.zip
 
-unzip ml-20m.zip
+unzip ml-25m.zip
 
-mv ml-20m/ratings.csv .
+mv ml-25m/ratings.csv .
