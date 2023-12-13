@@ -169,6 +169,14 @@ def topSuggestions(fullObj, k, items):
 
 @app.route("/", methods=['POST','GET'])
 def hello():
+    return make_response(jsonify(
+    {
+    'message':'Datos Cargados',
+    }
+    ))
+
+@app.route("/data", methods=['POST','GET'])
+def getdata():
     inicio = time.time()
     data = readLargeFileDask('ratings.csv')
     app.config['mi_dataframe'] = data
@@ -181,7 +189,6 @@ def hello():
     'len':len(data)
     }
     ))
-
 
 @app.route("/<int:user_id>", methods=['GET'])
 def getruta(user_id):
